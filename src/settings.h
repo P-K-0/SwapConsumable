@@ -3,6 +3,8 @@
 
 namespace Settings {
 
+	constexpr auto IniFile = "Data\\SKSE\\Plugins\\SwapConsumable.ini";
+
 	struct Item {
 
 		RE::FormID base{};
@@ -21,14 +23,14 @@ namespace Settings {
 
 		[[nodiscard]] auto& GetItems() noexcept { return items; }
 
-		[[nodiscard]] bool IsEnabled(RE::Actor* actor) noexcept;
+		[[nodiscard]] bool IsEnabled(RE::Actor*) noexcept;
 
 	private:
 
-		void ReadFile(const std::string& filename) noexcept;
+		void ReadFile(const std::string&) noexcept;
 
-		[[nodiscard]] Item Parse(const std::string& line) noexcept;
-		[[nodiscard]] RE::FormID AsID(const std::string& str) noexcept;
+		[[nodiscard]] Item Parse(const std::string&) noexcept;
+		[[nodiscard]] RE::FormID AsID(const std::string&) noexcept;
 
 		std::unordered_map<RE::FormID, Item> items;
 

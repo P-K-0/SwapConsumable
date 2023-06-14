@@ -11,18 +11,28 @@ namespace Settings {
 
 		ini.SetUnicode();
 
-		auto ret = ini.LoadFile("Data\\SKSE\\Plugins\\SwapConsumable.ini");
+		auto ret = ini.LoadFile(IniFile);
 
 		if (ret == SI_OK) {
 
 			bEnablePC = std::atoi(ini.GetValue("Main", "bEnablePC", "1"));
 			bEnableNPC = std::atoi(ini.GetValue("Main", "bEnableNPC", "0"));
+
+			return;
 		}
+
+		ini.SetValue("Main", "bEnablePC", "1");
+		ini.SetValue("Main", "bEnableNPC", "0");
+
+		ini.SaveFile(IniFile);
 	}
 
 	void Manager::EnumFiles() noexcept
 	{
 		boost::filesystem::path path{ "Data\\SKSE\\Plugins\\SwapConsumable\\" };
+
+		if (!boost::filesystem::exists(path))
+			return;
 
 		std::vector<std::string> files;
 
@@ -66,7 +76,7 @@ namespace Settings {
 
 			if (it != items.end()) {
 
-				logger::info("file : {} the list already contains this ID : {}", filename, item.base);
+				logger::info(FMT_STRING("File : {} the list already contains this ID : 0x{:X}"), filename, item.base);
 
 				continue;
 			}
@@ -75,7 +85,7 @@ namespace Settings {
 
 			if (!frm) {
 
-				logger::info("invalid ID : {}", item.base);
+				logger::info(FMT_STRING("File : {} invalid ID : 0x{:X}"), filename, item.base);
 
 				continue;
 			}
@@ -84,12 +94,14 @@ namespace Settings {
 
 			if (!isValid) {
 
-				logger::info("ID : {} the item must be consumable", item.base);
+				logger::info(FMT_STRING("File : {} ID : 0x{:X} the item must be consumable"), filename, item.base);
 
 				continue;
 			}
 
 			items[item.base] = item;
+
+			logger::info(FMT_STRING("File : {} Added ID : 0x{:X} Swap ID : 0x{:X} Count {}"), filename, item.base, item.swap, item.count);
 		}
 	}
 

@@ -4,19 +4,26 @@
 
 namespace Events {
 
+	void UpdateListItem(RE::TESObjectREFR* refr, RE::TESForm* form)
+	{
+		using fn = decltype(&UpdateListItem);
+		REL::Relocation<fn> fnUpdateListItem(REL::RelocationID(51911, 52849, 0));
+		fnUpdateListItem(refr, form);
+	}
+
 	void Hook::Drink(RE::Actor* a_this, RE::AlchemyItem* a_item, RE::ExtraDataList* a_extraList)
 	{
 		a_DrinkPotion(a_this, a_item, a_extraList);
 
-		auto& settings = Settings::Manager::GetSingleton();
-
 		if (!a_this || a_this->IsDead() || !a_this->Is3DLoaded() || !a_item)
 			return;
+
+		auto& settings = Settings::Manager::GetSingleton();
 
 		if (!settings.IsEnabled(a_this))
 			return;
 
-		auto items = Settings::Manager::GetSingleton().GetItems();
+		auto& items = settings.GetItems();
 
 		auto it = items.find(a_item->formID);
 
@@ -28,8 +35,14 @@ namespace Events {
 
 				auto obj = frmObj->As<RE::TESBoundObject>();
 
-				if (obj)
+				if (obj) 
 					a_this->AddObjectToContainer(obj, nullptr, it->second.count, nullptr);
+
+				if (a_this == RE::PlayerCharacter::GetSingleton()) {
+
+					UpdateListItem(a_this, nullptr);
+					UpdateListItem(a_this, nullptr);
+				}
 			}
 		}
 	}

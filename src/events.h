@@ -25,7 +25,7 @@ namespace Events {
 		Hook& operator=(const Hook&) = delete;
 		Hook& operator=(Hook&&) = delete;
 
-		const REL::RelocationID DrinkPotionID = RELOCATION_ID(37797, 38746);
+		const REL::RelocationID DrinkPotionID = REL::RelocationID(37797, 38746, 0);
 
 		static DrinkPotionFn a_DrinkPotion;
 
